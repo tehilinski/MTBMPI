@@ -1,3 +1,6 @@
+Master-Task-Blackboard MPI Framework                 {#mainpage}
+=====================================
+
 # About the MTBMPI Framework
 
 MTBMPI is a C++ library implementing a Master-Task-Blackboard pattern for
@@ -11,7 +14,7 @@ Processes of MPI rank 0 and 1 are the Master + Controller and
 Blackboard, respectively, and the remaining processes are work tasks.
 In the following diagram, MPI is running N tasks.
 
-![Schematic of a running MTBMPI application. MPI processes are blue. MPI messages are red.](./doc/MTBMPI_Overview.svg)
+![Schematic of a running MTBMPI application. MPI processes are blue. MPI messages are red.](MTBMPI_Overview.svg)
 
 **Features include:**
 
@@ -29,12 +32,12 @@ In the following diagram, MPI is running N tasks.
 **How you use MTBMPI:**
 
 To use this framework, you implement your master and task classes
-derived from `mtbmpi::Master and mtbmpi::TaskAdapterBase`.
+derived from mtbmpi::Master and mtbmpi::TaskAdapterBase.
 Also you will create a task factory and an output manager factory
-derived from `mtbmpi::TaskFactoryBase` and `mtbmpi::OutputFactoryBase`, respectively.
+derived from mtbmpi::TaskFactoryBase and mtbmpi::OutputFactoryBase, respectively.
 For each MPI process, your `main()` will create your master class, and run the task.
 
-A callbacks class derived from `mtbmpi::MpiCollectiveCB` provides
+A callbacks class derived from mtbmpi::MpiCollectiveCB provides
 the functions to do things after MPI initialization and before MPI finalization.
 These callback hooks allow you to initialize and finalize I/O, for instance.
 
@@ -43,7 +46,7 @@ See the specific class documentation for details.
 
 The library namespace is `mtbmpi`.
 
-![A simplified class diagram with an application.](./doc/MTBMPI_simple_class_diagram.svg)
+![A simplified class diagram with an application.](MTBMPI_simple_class_diagram.svg)
 
 
 # Example application structure
@@ -54,7 +57,7 @@ No output manager is provided, so the "no-op" version is used instead.
 Also, a callbacks class is not used here; instead MTBMPI's "no-op"
 child class is used.
 
-```
+@code{.cpp}
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -90,21 +93,21 @@ int main ( int argc, char **argv )
     }
     return 0;
 }
-```
+@endcode
 
 The full example code is in `examples/SimpleExample.cpp`
 
 # Implementing your application
 
 The two main parts of your application that use MTBMPI are the master
-and task classes. Your master class will be derived from `mtbmpi::Master`,
+and task classes. Your master class will be derived from mtbmpi::Master,
 which contains the Controller event loop which checks for MPI messages from tasks.
-Your task class will be derived from `mtbmpi::TaskAdapterBase`,
-which in turn is owned by `mtbmpi::Task`.
+Your task class will be derived from mtbmpi::TaskAdapterBase,
+which in turn is owned by mtbmpi::Task.
 
 There are at least three MPI processes when running an MTBMPI application.
-The `mtbmpi::Master` and `mtbmpi::Controller` run in
-MPI rank zero. The `mtbmpi::Blackboard` runs as MPI rank 1.
+The mtbmpi::Master and mtbmpi::Controller run in
+MPI rank zero. The mtbmpi::Blackboard runs as MPI rank 1.
 Your application tasks run in MPI ranks 2 and greater.
 
 Communication between MPI processes is done via MPI messages. These can be
@@ -126,7 +129,7 @@ for MPI rank == zero (the Controller rank).
 For example, the `AppMaster` in the example above could have a
 constructor like this:
 
-```
+@code{.cpp}
 class WorkMaster : public mtbmpi::Master
 {
     public:
@@ -146,18 +149,18 @@ class WorkMaster : public mtbmpi::Master
 	    }
 	}
 };
-```
+@endcode
 
 Of course, there is more that can be done in your master's constructor,
 such as application intialization, creating an MPI error handler,
 and checking for startup errors.
 
-The `mtbmpi::Master` has 5 virtual methods that your application master
+The mtbmpi::Master has 5 virtual methods that your application master
 class will implement. The methods can do nothing, if not used.
 All are private void functions with no arguments:
 
-| function                  | description                         | example use                   |
-| :------------------------ | :-----------------------------------| :-----------------------------|
+| function                    | description                         | example use                   |
+| :-------------------------- | :-----------------------------------| :-----------------------------|
 | `DoActionsBeforeTasks`      | Called before tasks created.        | Read configuration file.
 | `DoActionsAtInitTasks`      | Called before task initialization.  | Open output files.
 | `DoActionsBeforeTasksStart` | Called before tasks are started.    | Send tasks configuration data.
@@ -167,8 +170,8 @@ All are private void functions with no arguments:
 
 ## Your Application Task
 
-Your application's task class will be derived from `mtbmpi::TaskAdapterBase`.
-That in turn has a parent `mtbmpi::Task`.
+Your application's task class will be derived from mtbmpi::TaskAdapterBase.
+That in turn has a parent mtbmpi::Task.
 Here, both together will be referred to as "the task".
 
 A task does the work of the application. Tasks know their state, and need to keep the Master/Controller
@@ -180,7 +183,7 @@ informed of changes in their state. Tasks are sent messages to initialize, start
 The task is responsible for knowing its state, and for telling
 the Master when its state changes.
 
-The state of each task is tracked by `mtbmpi::Tracker`.
+The state of each task is tracked by mtbmpi::Tracker.
 Tasks can have the following states, defined in `State.h`:
 
 | enum State         | description                                     |
@@ -197,11 +200,11 @@ Tasks can have the following states, defined in `State.h`:
 At every change of state, your application task should inform
 MTBMPI of the new state using
 
-```
+@code{.cpp}
 GetParent()->SetState( newState )
-```
+@endcode
 
-The virtual methods which your task implements will return the current `mtbmpi::State` of the task.
+The virtual methods which your task implements will return the current mtbmpi::State of the task.
 
 ### Task Messages
 
@@ -237,21 +240,21 @@ command-line arguments and other initialization data.
 To send a log message to the Blackboard, the application task
 uses the mtbmpi::Task function:
 
-```
+@code{.cpp}
 GetParent()->SendMsgToLog( msg );
-```
+@endcode
 
 Separate tags are provided for labeling configuration information,
 other data, and task results, so that your application can route
 the information provided to the appropriate destination.
 
 To learn how to use Blackboard's OutputMgr as an task output sink,
-see [Using the Blackboard OutputMgr].
+see [Using the Blackboard OutputMgr](@ref Using_the_Blackboard_OutputMgr)
 
 
 ### Task Virtual Methods
 
-The `mtbmpi::TaskAdapterBase` has five virtual methods that your application task
+The mtbmpi::TaskAdapterBase has five virtual methods that your application task
 class will implement. All are private void functions with no arguments:
 
 | function           | description              | example use                   |
@@ -265,41 +268,39 @@ class will implement. All are private void functions with no arguments:
 
 ### Sending data to tasks
 
-You can make a `mtbmpi::Communicator` object to identify which tasks to receive
+You can make a mtbmpi::Communicator object to identify which tasks to receive
 configuration information or other data. Send this information after the tasks
 have been created, i.e., at task initialization. Since this is a collective
 operation, all tasks to share in this communication need to create the
-`mtbmpi::Communicator`.
+mtbmpi::Communicator.
 
-```
+@code{.cpp}
 mtbmpi::Communicator comm ( "Tasks", ranks );	// include rank zero == the sender
 DisplayMsg( myRank, "Communicator initialized from ranks = ", MakeRanksString(ranks) );
-```
+@endcode
 
-The `mtbmpi::CommStrings` class sends an array of strings to specified tasks,
+The mtbmpi::CommStrings class sends an array of strings to specified tasks,
 using an MPI communicator. These strings can be command-lines or other
 configuration data.
 
-```
+@code{.cpp}
 mtbmpi::CommStrings commStrings ( myRank, Log(), comm );
 for ( int taskID = 1; taskID < comm.GetComm().Get_size(); ++taskID )
     commStrings.Isend( taskID, mtbmpi::Tag_CmdLineArgs, strVec );
 commStrings.WaitAll();		// wait for all ISends to complete
-```
+@endcode
 
 An example of using CommStrings in this way is in
-`tests/Test_CommStrings.cpp`.
+[`tests/Test_CommStrings.cpp`.](_2tests_2_test__comm_strings_8cpp-example.html)
 
-**Note:**
-
-> When a mtbmpi::Communicator is made from a subset of all tasks, the
-> ranks in the new group and communicator will be sequential and
-> contiguous. E.g, MPI::COMM_WORLD ranks (0, 2, 3) will be (0, 1, 2)
-> in the new Communicator.
-
+@note
+When a mtbmpi::Communicator is made from a subset of all tasks, the
+ranks in the new group and communicator will be sequential and
+contiguous. E.g, MPI::COMM_WORLD ranks (0, 2, 3) will be (0, 1, 2)
+in the new Communicator.
 
 
-## Using the Blackboard OutputMgr					
+## Using the Blackboard OutputMgr					{#Using_the_Blackboard_OutputMgr}
 
 In concurrent processes, there are a limited number of methods
 to write output from multiple tasks to files.
@@ -324,22 +325,22 @@ Your task will send an MPI message to Blackboard
 with the message tag `Tag_TaskResults`.
 Blackboard will forward the message to its OutputMgr.
 
-`mtbmpi::OutputMgr` is a base class with a virtual function `HandleOutputMessage`.
+mtbmpi::OutputMgr is a base class with a virtual function HandleOutputMessage.
 You will need to create a class inheriting OutputMgr and implementing
-`HandleOutputMessage` to receive and process the message.
-You can use the class `mtbmpi::CommStrings` in your tasks to send an
+HandleOutputMessage to receive and process the message.
+You can use the class mtbmpi::CommStrings in your tasks to send an
 array of strings to the Blackboard, as well as use it in
 your HandleOutputMessage to receive the output.
 The techniques in the Isend and Receive methods in
-`mtbmpi::CommStrings` can be easily modified to transfer other kinds of data.
+mtbmpi::CommStrings can be easily modified to transfer other kinds of data.
 
 An example of implementing an OutputMgr child class is in
-`examples/OutputMgrExample.cpp`.
+[`examples/OutputMgrExample.cpp`.](_2examples_2_output_mgr_example_8cpp-example.html)
 The class method `WorkTask::SendToOutput` sends information to Blackboard via MPI,
 and `OutputMgr::HandleOutputMessage` receives the message and directs it
 to `OutputSink::Write`.
 
-# Build and Install the Library
+# Build and Install the Library                         {#Build_and_Install_the_Library}
 
 CMake is used to build the MTBMPI library. Build types are
 
@@ -384,7 +385,7 @@ The files installed (for a Release build) are:
 # Building and Running the Examples
 
 Make the library:
-See [Build and Install the Library](#Build and Install the Library).
+See [Build and Install the Library](#Build_and_Install_the_Library).
 
 ## Simple Example
 
@@ -452,23 +453,23 @@ Documentation is generated by Doxygen (version 1.8 or newer).
 # Additional Information
 
 MPI Reference (OpenMPI):
-[https://www.open-mpi.org/doc/v2.1/]
+https://www.open-mpi.org/doc/v2.1/
 
 CMake reference:
-[https://cmake.org/cmake/help/v3.10/index.html]
+https://cmake.org/cmake/help/v3.10/index.html
 
 Doxygen reference:
-[https://www.doxygen.nl/manual]
+https://www.doxygen.nl/manual
 
 The GNU g++ compiler reference:
-[https://gcc.gnu.org/]
+https://gcc.gnu.org/
 
 
 # License
 
 This software library, including source code and documentation,
 is licensed under the Apache License version 2.0.
-See the file **LICENSE.md** for the complete license.
+See @ref license "LICENSE.md" for the complete license.
 
 The MTBMPI library is a fork of the original IRC::MPIMSB library,
 which is part of the IRC project source code,
