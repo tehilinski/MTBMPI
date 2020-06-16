@@ -1,0 +1,71 @@
+/* mtbmpi.css:
+ * Custom CSS for MTBMPI Doxygen document.
+ */
+
+body {
+    font-family: Liberation Sans, DejaVu Sans, sans serif, sans;
+}
+
+h1, h2, h3, .title {
+    font-family: Liberation Sans, DejaVu Sans, sans serif, sans;
+}
+
+h1 {
+    font-size: 135%;
+    margin-top: 2em;
+}
+
+h2 {
+    font-size: 125%;
+    margin-left: 1em;
+    margin-top: 2em;
+}
+
+h3 {
+    font-size: 105%;
+    margin-left: 1em;
+}
+
+h4 {
+    font-size: 100%;
+    font-family: Liberation Serif, DejaVu Serif, serif, sans;
+    margin-left: 1em;
+}
+
+.title
+{
+    text-align: center;
+}
+
+pre.fragment {
+    font-size: 95%;
+    font-family: Liberation Mono, DejaVu San Mono, Monospace, fixed;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+p {
+    margin-left: 1em;
+    margin-right: 1em;
+    line-height: 130%;
+}
+
+table {
+    margin-left: 2em;
+}
+
+table.markdownTable td, table.markdownTable th {
+    border: 1px solid #C4CFE5;
+    font-size: 90%;
+}
+
+th.markdownTableHeadLeft, th.markdownTableHeadRight, th.markdownTableHeadCenter, th.markdownTableHeadNone {
+    background-color: inherit;
+    color: inherit;
+}
+
+/* code examples */
+div.fragment {
+    margin-left: 1em;
+    padding: 0.5em;
+}
