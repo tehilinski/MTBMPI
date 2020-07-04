@@ -381,12 +381,12 @@ The files installed (for a Release build) are:
     `-- include/*.h
 
 
-# Building and Running the Examples
+## Building and Running the Examples
 
 Make the library:
 See [Build and Install the Library].
 
-## Simple Example
+### Simple Example
 
 Assuming the library file is present in the cmake build tree,
 make the simple example executable with:
@@ -430,6 +430,14 @@ The log file contains:
     2020-01-01_15-36-55: Elapsed time for all tasks (seconds): 0.310147
     2020-01-01_15-36-55: Blackboard stopped.
 
+## Generate the API document
+
+Use Doxygen (version 1.8 or newer) to create an API document
+for the MTBMPI framework.
+
+Open a console in the ``doc`` directory, and run the command 
+``doxygen``. The document will be in the ``html`` subdirectory.
+Open the file ``html/index.html`` to view the document.
 
 
 # Requirements and Compatibility
