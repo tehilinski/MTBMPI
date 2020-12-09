@@ -28,6 +28,8 @@ project( "${TARGET_NAME}"
 set( CMAKE_SOURCE_DIR "${CMAKE_BINARY_DIR}/../../src" )
 set( CMAKE_INSTALL_INCLUDEDIR "include/${appNameBase}")
 
+include( FindMPI )
+
 #------------------------------------------- GNU compiler settings -------------------------------------------
 #
 set( CMAKE_C_FLAGS                  "-std=c++11" )
@@ -42,7 +44,10 @@ set( CMAKE_CXX_FLAGS_RELWITHDEBINFO "-std=c++11 -O1 -g" )
 
 #--------------------------------------------------- MPI -----------------------------------------------------
 
-find_package( MPI REQUIRED )
+if ( !MPI_MPICXX_FOUND )
+    message( SEND_ERROR "MPI C++ installation was not found." )
+    return()
+endif()
 
 #-------------------------------------------------- status ---------------------------------------------------
 
@@ -51,7 +56,9 @@ message( STATUS "library file:\t\t"        "${TARGET_NAME}" )
 message( STATUS "source directory:\t\t"    "${CMAKE_SOURCE_DIR}" )
 message( STATUS "install path root:\t\t"   "${CMAKE_INSTALL_PREFIX}" )
 message( STATUS "install path includes:\t" "${CMAKE_INSTALL_INCLUDEDIR}" )
+message( STATUS "MPI compiler:\t\t"        "${MPI_CXX_COMPILER}" )
 message( STATUS "MPI include path:\t\t"    "${MPI_CXX_INCLUDE_DIRS}" )
+message( STATUS "MPI libraries:\t\t"       "${MPI_CXX_LIBRARIES}" )
 message( STATUS "Run: ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} ${MPIEXEC_PREFLAGS} EXECUTABLE ${MPIEXEC_POSTFLAGS} ARGS" )
 
 #-------------------------------------------------- library --------------------------------------------------

@@ -100,13 +100,13 @@ The full example code is in `examples/SimpleExample.cpp`
 # Implementing your application
 
 The two main parts of your application that use MTBMPI are the master
-and task classes. Your master class will be derived from mtbmpi::Master,
+and task classes. Your master class will be derived from ``mtbmpi::Master``,
 which contains the Controller event loop which checks for MPI messages from tasks.
-Your task class will be derived from mtbmpi::TaskAdapterBase,
+Your task class will be derived from ``mtbmpi::TaskAdapterBase``,
 which in turn is owned by mtbmpi::Task.
 
 There are at least three MPI processes when running an MTBMPI application.
-The mtbmpi::Master and mtbmpi::Controller run in
+The ``mtbmpi::Master`` and ``mtbmpi::Controller`` run in
 MPI rank zero. The mtbmpi::Blackboard runs as MPI rank 1.
 Your application tasks run in MPI ranks 2 and greater.
 
@@ -444,6 +444,10 @@ the GNU g++ compiler (versions >= 5).
 MPI versions 1 or 2 are required because the C++ MPI implementation was
 removed from the MPI version 3 standard. Your MPI version 3 or greater
 may still work if the C++ implementation is provided.
+Also, the MPI library must have been built with C++
+and C++ exceptions enabled.
+For example, with Open MPI, use the "configure" flags
+`--enable-mpi-cxx --enable-cxx-exceptions`.
 
 The build system uses CMake, version 3.10 or greater.
 
